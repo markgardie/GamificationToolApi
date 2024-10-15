@@ -16,15 +16,18 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 class SecurityConfig(
     private val jwtUtil: JwtUtil,
     private val studentService: UserDetailsService,
+    private val authenticationConfiguration: AuthenticationConfiguration
 ) {
 
     @Bean
-    fun authenticationManager(authenticationConfiguration: AuthenticationConfiguration): AuthenticationManager {
+    fun authenticationManager(): AuthenticationManager {
         return authenticationConfiguration.authenticationManager
     }
 
     @Bean
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
+        val authManager = authenticationManager()
+
         http
             .securityMatcher("/api/**")
             .csrf { it.disable() }
@@ -35,10 +38,9 @@ class SecurityConfig(
                     .requestMatchers("/api/student/**").hasRole("STUDENT")
                     .anyRequest().authenticated()
             }
-            .addFilter(JwtAuthenticationFilter(authenticationManager(http.getSharedObject(AuthenticationConfiguration::class.java)), jwtUtil))
+            .addFilter(JwtAuthenticationFilter(authManager, jwtUtil))
             .addFilterBefore(JwtAuthorizationFilter(jwtUtil, studentService), UsernamePasswordAuthenticationFilter::class.java)
 
         return http.build()
     }
-
 }
