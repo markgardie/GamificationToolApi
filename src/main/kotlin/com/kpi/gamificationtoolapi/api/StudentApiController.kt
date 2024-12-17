@@ -40,7 +40,7 @@ class StudentRestController(
 
         return ResponseEntity.ok(StudentProfileResponse(
             name = student.name,
-            age = student.age,
+            birthDate = student.birthDate,
             group = student.group.name,
             pointSystems = pointSystems.associate { it.name to it.value }
         ))

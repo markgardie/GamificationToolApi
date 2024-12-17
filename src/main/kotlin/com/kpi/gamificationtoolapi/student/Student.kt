@@ -2,6 +2,7 @@ package com.kpi.gamificationtoolapi.student
 
 import com.kpi.gamificationtoolapi.point_system.PointSystem
 import jakarta.persistence.*
+import java.time.LocalDate
 
 @Entity
 @Table(name = "students")
@@ -12,7 +13,8 @@ data class Student(
     @Column(nullable = false)
     val name: String,
 
-    val age: Int,
+    @Column(name = "birth_date", nullable = false)
+    val birthDate: LocalDate,
 
     @Column(unique = true, nullable = false)
     val login: String,
